@@ -1,5 +1,5 @@
 {
-  "name": "OneLineLogger",
+  "name": "onelinelogger",
   "version": "0.0.3",
   "description": "Simple Node logging to upgrade and extend console.log()",
   "main": "onelinelogger.js",
