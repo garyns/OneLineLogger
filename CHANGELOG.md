@@ -1,2 +1,5 @@
-# OneLineLogger
-Simple Node logging to upgrade and extend console.log()
+# OneLineLogger Change Log
+
+### 1.0.0
+Initial Release
+
