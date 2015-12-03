@@ -4,19 +4,34 @@ var colors = require("colors");
 
 console._log = console.log;
 
-// Global settings that affect ALL instances of logger.
+// Global settings that affect ALL instances of Logger.
 var prefixLen = 0;
 var debugging = true;
 var file = null;
 
 function Logger(prefix) {
-    //if (!(this instanceof Logger)) return new Logger(prefix);
-    
-    this.config = {
-        prefix: ""
-    };
-     
     this.setPrefix(prefix);
+}
+
+/**
+ * Default static Logger instance.
+ */
+var defaultLogger = new Logger();
+
+Logger.log = defaultLogger.log.bind(defaultLogger);
+Logger.info = defaultLogger.info.bind(defaultLogger);
+Logger.highlight = defaultLogger.highlight.bind(defaultLogger);
+Logger.warn = defaultLogger.warn.bind(defaultLogger);
+Logger.error = defaultLogger.error.bind(defaultLogger);
+Logger.debug = defaultLogger.debug.bind(defaultLogger);
+Logger.setPrefix = defaultLogger.setPrefix.bind(defaultLogger);
+
+
+/**
+ * Create a custom Logger instance.
+ */
+Logger.create = function(prefix) {
+    return new Logger(prefix);
 }
 
 /**
@@ -47,9 +62,9 @@ Logger.setGlobalDebugging = function(on) {
 Logger.prototype.setPrefix = function(p) {
     
     if (p === undefined || p === null) {
-        this.config.prefix = "";
+        this.prefix = "";
     } else {
-        this.config.prefix = p;
+        this.prefix = p;
     }
  
     return this;
@@ -63,6 +78,7 @@ Logger.setGlobalFile = function(f) {
 }
 
 Logger.prototype.log = function () {
+    
     Array.prototype.unshift.call(
         arguments,
         new Date().toLocaleString(),
@@ -82,10 +98,11 @@ Logger.prototype.log = function () {
 };
 
 Logger.prototype.highlight = function () {
+    
     Array.prototype.unshift.call(
         arguments,
         new Date().toLocaleString(),
-        this.getPrefix("SUCCESS")
+        this.getPrefix("******")
     );
     
     for (i in arguments) {
@@ -101,6 +118,7 @@ Logger.prototype.highlight = function () {
 };
 
 Logger.prototype.info = function () {
+    
     Array.prototype.unshift.call(
         arguments,
         new Date().toLocaleString(),
@@ -140,6 +158,7 @@ Logger.prototype.error = function () {
 };
 
 Logger.prototype.warn = function () {
+    
     Array.prototype.unshift.call(
         arguments,
         new Date().toLocaleString(),
@@ -195,10 +214,35 @@ Logger.replaceConsole = function() {
     return this;
 }
 
+Logger.prototype.getPrefix = function(level) {
+    
+    level = padLeft(5, level, " "); // 5 = ERROR.length
+ 
+    if (this.prefix === "") {
+        return "[" + level + "]";
+    }
+    
+    var p = this.prefix;
+    
+    if (prefixLen > 0) {
+        p = padLeft(prefixLen, p, " ");
+    }
+    
+    return "[" + level + "]" + " [" + p + "]";
+    
+}
+
+/**
+ * Pad a string.
+ */
+function padLeft(width, string, padding) { 
+  return (width <= string.length) ? string : padLeft(width, string + padding, padding);
+}
+
 /**
  * Appends line to a file if Logger.file is specified.
  */
-writeLogFile = function(file, line) {
+function writeLogFile(file, line) {
      
     if (file === undefined || file === null) {
         return;
@@ -209,44 +253,6 @@ writeLogFile = function(file, line) {
     });
 }
 
-Logger.prototype.getPrefix = function(level) {
-    
-    level = padLeft(7, level, " "); // 7 = SUCCESS.length
- 
-    if (this.config.prefix === "") {
-        return "[" + level + "]";
-    }
-    
-    var p = this.config.prefix;
-    
-    if (prefixLen > 0) {
-        p = padLeft(prefixLen, p, " ");
-    }
-    
-    return "[" + level + "]" + " [" + p + "]";
-    
-}
-
-function padLeft(width, string, padding) { 
-  return (width <= string.length) ? string : padLeft(width, string + padding, padding);
-}
-
-
-var defaultLogger = new Logger();
-
-Logger.log = defaultLogger.log.bind(defaultLogger);
-Logger.info = defaultLogger.info.bind(defaultLogger);
-Logger.highlight = defaultLogger.highlight.bind(defaultLogger);
-Logger.warn = defaultLogger.warn.bind(defaultLogger);
-Logger.error = defaultLogger.error.bind(defaultLogger);
-Logger.debug = defaultLogger.debug.bind(defaultLogger);
-//Logger.setDebugging = defaultLogger.setDebugging.bind(defaultLogger);
-Logger.setPrefix = defaultLogger.setPrefix.bind(defaultLogger);
-//Logger.setFile = defaultLogger.setFile.bind(defaultLogger);
-
-Logger.create = function(prefix, len) {
-    return new Logger(prefix, len);
-}
 
 module.exports = Logger;
 
