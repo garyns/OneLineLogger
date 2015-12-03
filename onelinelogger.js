@@ -9,36 +9,25 @@ var prefixLen = 0;
 var debugging = true;
 var file = null;
 
-function Logger(prefix) {
-    this.setPrefix(prefix);
+function Logger() {
+    this.prefix = "";
 }
-
-/**
- * Default static Logger instance.
- */
-var defaultLogger = new Logger();
-
-Logger.log = defaultLogger.log.bind(defaultLogger);
-Logger.info = defaultLogger.info.bind(defaultLogger);
-Logger.highlight = defaultLogger.highlight.bind(defaultLogger);
-Logger.warn = defaultLogger.warn.bind(defaultLogger);
-Logger.error = defaultLogger.error.bind(defaultLogger);
-Logger.debug = defaultLogger.debug.bind(defaultLogger);
-Logger.setPrefix = defaultLogger.setPrefix.bind(defaultLogger);
 
 
 /**
  * Create a custom Logger instance.
  */
 Logger.create = function(prefix) {
-    return new Logger(prefix);
+    var logger = new Logger();
+    logger.setPrefix(prefix);
+    return logger;
 }
 
 /**
  * Set min width of prefix text. Eg 0 -> [MON], 5 -> [MON  ].
  * Tweaking this helps keep text lining up in your log output.
  */
-Logger.setGlobalPrefixLength = function(len) {
+Logger.prototype.setGlobalPrefixLength = function(len) {
     
     if (len === undefined) {
         len = 0;
@@ -51,7 +40,7 @@ Logger.setGlobalPrefixLength = function(len) {
 /**
  * Set weather .debug() calls are logged or not.
  */
-Logger.setGlobalDebugging = function(on) {
+Logger.prototype.setGlobalDebugging = function(on) {
     debugging = on;
     return this;
 }
@@ -73,7 +62,7 @@ Logger.prototype.setPrefix = function(p) {
 /**
  * Specify output file for logging. Null to disable.
  */
-Logger.setGlobalFile = function(f) {
+Logger.prototype.setGlobalFile = function(f) {
     file = f;
 }
 
@@ -102,7 +91,7 @@ Logger.prototype.highlight = function () {
     Array.prototype.unshift.call(
         arguments,
         new Date().toLocaleString(),
-        this.getPrefix("******")
+        this.getPrefix("*****")
     );
     
     for (i in arguments) {
@@ -113,7 +102,7 @@ Logger.prototype.highlight = function () {
 
     argumentsStr =  Array.prototype.join.call(arguments, " ");
     writeLogFile(file, argumentsStr);
-    console._log(argumentsStr.green);
+    console._log(argumentsStr.bgGreen);
     return this;
 };
 
@@ -204,13 +193,13 @@ Logger.prototype.debug = function () {
 /**
  * Replace/Add console functions with Logger functions.
  */
-Logger.replaceConsole = function() {
-    console.log = this.log;
-    console.highlight = this.highlight;
-    console.info = this.info;
-    console.warn = this.warn;
-    console.error = this.error;
-    console.debug = this.debug;
+Logger.prototype.replaceConsole = function() {
+    console.log = this.log.bind(this);
+    console.highlight = this.highlight.bind(this);
+    console.info = this.info.bind(this);
+    console.warn = this.warn.bind(this);
+    console.error = this.error.bind(this);
+    console.debug = this.debug.bind(this);
     return this;
 }
 
@@ -253,6 +242,23 @@ function writeLogFile(file, line) {
     });
 }
 
+
+/**
+ * Default static Logger instance.
+ */
+var defaultLogger = new Logger();
+
+Logger.log = defaultLogger.log.bind(defaultLogger);
+Logger.info = defaultLogger.info.bind(defaultLogger);
+Logger.highlight = defaultLogger.highlight.bind(defaultLogger);
+Logger.warn = defaultLogger.warn.bind(defaultLogger);
+Logger.error = defaultLogger.error.bind(defaultLogger);
+Logger.debug = defaultLogger.debug.bind(defaultLogger);
+Logger.setPrefix = defaultLogger.setPrefix.bind(defaultLogger);
+Logger.replaceConsole = defaultLogger.replaceConsole.bind(defaultLogger);
+Logger.setGlobalDebugging = defaultLogger.setGlobalDebugging.bind(defaultLogger);
+Logger.setGlobalFile = defaultLogger.setGlobalFile.bind(defaultLogger);
+Logger.setGlobalPrefixLength = defaultLogger.setGlobalPrefixLength.bind(defaultLogger);
 
 module.exports = Logger;
 
