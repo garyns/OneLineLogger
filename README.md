@@ -1,6 +1,20 @@
 # OneLineLogger
 Simple Node logging to upgrade and extend console.log()
 
+## Installing
+
+##### NPM
+```
+npm install onelinelogger
+```
+##### GIT
+Clone from GIT and install dependencies.
+```
+git clone https://github.com/garyns/OneLineLogger.git
+cd OneLineLogger
+npm install
+```
+
 ## Examples
 
 ##### Basic Usage
