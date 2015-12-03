@@ -6,7 +6,10 @@
   "dependencies": {
     "colors": "^1.1.2"
   },
-  "repository": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/garyns/OneLineLogger"    
+  },
   "keywords": [
     "logger",
     "logging",
@@ -20,6 +23,9 @@
   "author": "Gary Smart (http://smart-itc.com.au)",
   "license": "MIT",
   "files": [
-    "onelinelogger.js"
+    "onelinelogger.js",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
   ]
 }
