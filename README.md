@@ -16,6 +16,11 @@ logger.debug("Call to logger.debug()");
 logger.highlight("Call to logger.highlight()");
 ```
 
+Here is the output:
+
+![Console Output](https://raw.githubusercontent.com/garyns/OneLineLogger/master/mdassets/Console1-BasicLogger.jpg)
+
+
 ##### Overloading console.log() and related functions
 ```js
 var logger = require("onelinelogger");
@@ -36,6 +41,10 @@ console.error("Call to console.error()");
 console.debug("Call to console.debug()");
 console.highlight("Call to console.highlight()");
 ```
+
+Here is the output (spacing added):
+
+![Console Output](https://raw.githubusercontent.com/garyns/OneLineLogger/master/mdassets/Console3-ConsoleOverload.jpg)
 
 ##### Custom Logger Instance
 Create custom loggers to help associate log entries with different parts of your code.
@@ -59,6 +68,10 @@ myLogger.highlight("Call to myLogger.highlight()");
 var myLogger2 = require("onelinelogger").create("MY_LOGGER2");
 
 ```
+
+Here is the output:
+
+![Console Output](https://raw.githubusercontent.com/garyns/OneLineLogger/master/mdassets/Console2-CustomLogger.jpg)
 
 You can change the 'prefix' of a logger by calling `setPrefix()`.
 ```js
