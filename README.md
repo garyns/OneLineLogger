@@ -53,6 +53,11 @@ myLogger.warn("Call to myLogger.warn()");
 myLogger.error("Call to myLogger.error()");
 myLogger.debug("Call to myLogger.debug()");
 myLogger.highlight("Call to myLogger.highlight()");
+
+
+// Alternatively, you could...
+var myLogger2 = require("onelinelogger").create("MY_LOGGER2");
+
 ```
 
 You can change the 'prefix' of a logger by calling `setPrefix()`.
