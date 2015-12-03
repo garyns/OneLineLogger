@@ -1,6 +1,6 @@
 {
   "name": "onelinelogger",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Simple Node logging to upgrade and extend console.log()",
   "main": "onelinelogger.js",
   "dependencies": {
