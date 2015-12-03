@@ -1,0 +1,25 @@
+{
+  "name": "OneLineLogger",
+  "version": "0.0.1",
+  "description": "Simple Node logging to upgrade and extend console.log()",
+  "main": "onelinelogger.js",
+  "dependencies": {
+    "colors": "^1.1.2"
+  },
+  "repository": {},
+  "keywords": [
+    "logger",
+    "logging",
+    "terminal",
+    "output",
+    "console"
+  ],
+  "engines": {
+    "node": ">=0.12"
+  },
+  "author": "Gary Smart (http://smart-itc.com.au)",
+  "license": "MIT",
+  "files": [
+    "onelinelogger.js"
+  ]
+}
