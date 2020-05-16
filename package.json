@@ -27,5 +27,8 @@
     "README.md",
     "LICENSE",
     "CHANGELOG.md"
-  ]
+  ],
+  "devDependencies": {
+    "browser-info": "0.0.4"
+  }
 }
