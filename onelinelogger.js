@@ -2,6 +2,7 @@
 var fs = require("fs");
 var os = require("os");
 var colors = require("colors");
+var util = require('util')
 
 console._log = console.log;
 
@@ -77,7 +78,8 @@ Logger.prototype.log = function () {
     
     for (i in arguments) {
         if (typeof arguments[i] === "object") {
-            arguments[i] = JSON.stringify(arguments[i]);
+            //arguments[i] = JSON.stringify(arguments[i]);
+            arguments[i] = util.inspect(arguments[i]);
         }
     }  
 
@@ -97,7 +99,8 @@ Logger.prototype.highlight = function () {
     
     for (i in arguments) {
         if (typeof arguments[i] === "object") {
-            arguments[i] = JSON.stringify(arguments[i]);
+            // arguments[i] = JSON.stringify(arguments[i]);
+            arguments[i] = util.inspect(arguments[i]);
         }
     }    
 
@@ -117,7 +120,8 @@ Logger.prototype.info = function () {
     
     for (i in arguments) {
         if (typeof arguments[i] === "object") {
-            arguments[i] = JSON.stringify(arguments[i]);
+            // arguments[i] = JSON.stringify(arguments[i]);
+            arguments[i] = util.inspect(arguments[i]);
         }
     }    
 
@@ -137,7 +141,8 @@ Logger.prototype.error = function () {
     
     for (i in arguments) {
         if (typeof arguments[i] === "object") {
-            arguments[i] = JSON.stringify(arguments[i]);
+            //arguments[i] = JSON.stringify(arguments[i]);
+            arguments[i] = util.inspect(arguments[i]);
         }
     }    
 
@@ -157,9 +162,10 @@ Logger.prototype.warn = function () {
     
     for (i in arguments) {
         if (typeof arguments[i] === "object") {
-            arguments[i] = JSON.stringify(arguments[i]);
+            // arguments[i] = JSON.stringify(arguments[i]);
+            arguments[i] = util.inspect(arguments[i]);
         }
-    }    
+    }
 
     argumentsStr =  Array.prototype.join.call(arguments, " ");
     writeLogFile(file, argumentsStr);
@@ -175,7 +181,8 @@ Logger.prototype.debug = function () {
     
     for (i in arguments) {
         if (typeof arguments[i] === "object") {
-            arguments[i] = JSON.stringify(arguments[i]);
+            // arguments[i] = JSON.stringify(arguments[i]);
+            arguments[i] = util.inspect(arguments[i]);
         }
     }
     
@@ -197,6 +204,7 @@ Logger.prototype.debug = function () {
 Logger.prototype.replaceConsole = function() {
     console.log = this.log.bind(this);
     console.highlight = this.highlight.bind(this);
+    console.silly = this.highlight.bind(this); // alias for highlight
     console.info = this.info.bind(this);
     console.warn = this.warn.bind(this);
     console.error = this.error.bind(this);
@@ -252,6 +260,7 @@ var defaultLogger = new Logger();
 Logger.log = defaultLogger.log.bind(defaultLogger);
 Logger.info = defaultLogger.info.bind(defaultLogger);
 Logger.highlight = defaultLogger.highlight.bind(defaultLogger);
+Logger.silly = defaultLogger.highlight.bind(defaultLogger); // Alias for highlight
 Logger.warn = defaultLogger.warn.bind(defaultLogger);
 Logger.error = defaultLogger.error.bind(defaultLogger);
 Logger.debug = defaultLogger.debug.bind(defaultLogger);
