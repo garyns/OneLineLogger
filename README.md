@@ -120,5 +120,8 @@ logger.setGlobalPrefixLength(10);
 // Supress (false) or show (true) calls to .debug()
 // Debug logging is on by default.
 logger.setGlobalDebugging(true);
+
+// Check if global debugging is enabled.
+const debugging = logger.isDebug();
 ```
 

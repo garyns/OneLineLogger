@@ -1,4 +1,59 @@
-
+/**
+ * A simple, no fuss logging library for Node.
+ * 
+ * Web Browser Note - this library is untested and unexpected to work in a Web Browser.
+ *                    it was designed spcifically for Node applications.
+ * 
+ * Examples:
+ * 
+ *   // Default Logger
+ *   const logger = require('onelinelogger')
+ *   logger.info("My text to log")
+ * 
+ *   // Named Logger
+ *   const logger = require('onelinelogger').create("Database")
+ *   // ... some code ...
+ *   logger.error("Failed to connect", err)
+ * 
+ *   // Names Logger - creating multiple
+ *   const logger = require('onelinelogger')
+ *   const dbLogger = logger.create("Database")
+ *   const apiLogger = logger.create("API")
+ * 
+ *  // Enable or disable global debug logging (on by default)
+ *  // Debug logging is enabled or disabled for ALL logger instances
+ *  // (Different logger instances cannot have different debug logging settings)
+ *  const logger = require('onelinelogger')
+ *  const dbLogger = logger.create("Database")
+ *  const apiLogger = logger.create("API")
+ * 
+ *  // Disable global debug logging
+ *  logger.setGlobalDebugging(false) 
+ *
+ *  // The following would also diable global debug logging
+ *  // dbLogger.setGlobalDebugging(false) 
+ *  // apiLogger.setGlobalDebugging(false)
+ * 
+ *  concole.log(logger.isDebug())    // false
+ *  concole.log(dbLogger.isDebug())  // false
+ *  concole.log(apiLogger.isDebug()) // false
+ * 
+ *  dbLogger.debug("Some debug text")  // will not be logged
+ *  apiLogger.debug("Some debug text") // will not be logged
+ * 
+ * // Logging to a file (all logger instances will log to this file)
+ * // Logging still occurs to the console.
+ * const logger = require('onelinelogger')
+ * logger.setGlobalFile("./logs/log.txt")
+ * logger.warn("Something is not quite right...", data) // logged to file and console
+ * 
+ * // Replace console.log(), info(), warn(), error() and debug()
+ * // This is a quick way to upgrade a program using console logging functions
+ * // to the onelinelogger library.
+ * const logger = require('onelinelogger')
+ * logger.replaceConsole()
+ * console.warn("Something is not quite right...", data) // Now mapped to logger.warn()
+ */
 var fs = require("fs");
 var os = require("os");
 var colors = require("colors");
@@ -226,8 +281,14 @@ Logger.prototype.getPrefix = function(level) {
         p = padLeft(prefixLen, p, " ");
     }
     
-    return "[" + level + "]" + " [" + p + "]";
-    
+    return "[" + level + "]" + " [" + p + "]";   
+}
+
+/**
+ * Check if debug logging enabled
+ */
+ Logger.prototype.isDebug = function() {
+    return debugging
 }
 
 /**
@@ -251,27 +312,24 @@ function writeLogFile(file, line) {
     });
 }
 
-
 /**
  * Default static Logger instance.
  */
 var defaultLogger = new Logger();
 
 Logger.log = defaultLogger.log.bind(defaultLogger);
+Logger.debug = defaultLogger.debug.bind(defaultLogger);
 Logger.info = defaultLogger.info.bind(defaultLogger);
-Logger.highlight = defaultLogger.highlight.bind(defaultLogger);
-Logger.silly = defaultLogger.highlight.bind(defaultLogger); // Alias for highlight
 Logger.warn = defaultLogger.warn.bind(defaultLogger);
 Logger.error = defaultLogger.error.bind(defaultLogger);
-Logger.debug = defaultLogger.debug.bind(defaultLogger);
-Logger.setPrefix = defaultLogger.setPrefix.bind(defaultLogger);
+Logger.highlight = defaultLogger.highlight.bind(defaultLogger);
+Logger.silly = defaultLogger.highlight.bind(defaultLogger); // Alias for highlight
+
 Logger.replaceConsole = defaultLogger.replaceConsole.bind(defaultLogger);
+Logger.setPrefix = defaultLogger.setPrefix.bind(defaultLogger);
+Logger.isDebug = defaultLogger.isDebug.bind(defaultLogger);
 Logger.setGlobalDebugging = defaultLogger.setGlobalDebugging.bind(defaultLogger);
 Logger.setGlobalFile = defaultLogger.setGlobalFile.bind(defaultLogger);
 Logger.setGlobalPrefixLength = defaultLogger.setGlobalPrefixLength.bind(defaultLogger);
 
 module.exports = Logger;
-
-
-
-
