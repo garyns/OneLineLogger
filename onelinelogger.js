@@ -76,6 +76,9 @@ Logger.INFO = 2
 Logger.WARN = 1
 Logger.ERROR = 0
 
+// Log Levels as Strings
+const logLevelStrings = ['ERROR', 'WARN', 'INFO', 'DEBUG']
+
 /**
  * Create a custom Logger instance.
  */
@@ -101,16 +104,20 @@ Logger.prototype.setGlobalPrefixLength = function(len) {
 
 /**
  * Set logging level.
- * @param {Number} level logging level 3 (DEBUG), 2 (INFO), 1 (WARN), 0 (ERROR)
+ * @param {(Number|String)} level logging level 3 (DEBUG), 2 (INFO), 1 (WARN), 0 (ERROR)
  *   or use Logger.DEBUG, Logger.INFO, Logger.WARN or Logger.ERROR
  */
  Logger.prototype.setLevel = function(level) {
 
-    level = parseInt(level)
+    if (typeof(level) === 'string' && logLevelStrings.includes(level.toUpperCase())) {
+        level = logLevelStrings.indexOf(level.toUpperCase())
+    } else {
+        level = parseInt(level)
+    }
 
     if (isNaN(level) || level < Logger.ERROR || level > Logger.DEBUG) {
-        throw new Error("Log level must be between 0 and 3. Constants available are Logger.DEBUG, Logger.INFO, Logger.WARN, Logger.ERROR")
-    }
+        throw new Error("Log level must be between 0 and 3, or a one of the strings ERROR, WARN, INFO or DEBUG. Constants available are Logger.DEBUG, Logger.INFO, Logger.WARN, Logger.ERROR")
+    }    
 
     logLevel = level
     return this;
@@ -122,6 +129,14 @@ Logger.prototype.setGlobalPrefixLength = function(len) {
  Logger.prototype.getLevel = function() {
     return logLevel
  }
+
+/**
+ * Get logging level name
+ * @returns {String} ERROR, WARN, INFO or DEBUG
+ */
+ Logger.prototype.getLevelName = function() {
+    return logLevelStrings[logLevel]
+ } 
 
  /**
  * Is debug logging level.
@@ -372,6 +387,7 @@ Logger.replaceConsole = defaultLogger.replaceConsole.bind(defaultLogger);
 Logger.setPrefix = defaultLogger.setPrefix.bind(defaultLogger);
 Logger.setLevel = defaultLogger.setLevel.bind(defaultLogger);
 Logger.getLevel = defaultLogger.getLevel.bind(defaultLogger);
+Logger.getLevelName = defaultLogger.getLevelName.bind(defaultLogger);
 Logger.isDebug = defaultLogger.isDebug.bind(defaultLogger);
 Logger.setGlobalDebugging = defaultLogger.setGlobalDebugging.bind(defaultLogger);
 Logger.setGlobalFile = defaultLogger.setGlobalFile.bind(defaultLogger);
@@ -380,18 +396,3 @@ Logger.setGlobalPrefixLength = defaultLogger.setGlobalPrefixLength.bind(defaultL
 module.exports = Logger;
 
 
-
-
-//
-// Module Entry Point
-//
-if (typeof require !== 'undefined' && require.main === module) {
-
-    const logger = Logger.create("MyLogger")
-
-    logger.setLevel(Logger.ERROR)
-   
-    console.log(Logger.isDebug())
-    
-  
-} // cli
