@@ -1,26 +1,17 @@
 {
   "name": "onelinelogger",
-  "version": "1.1.1",
-  "description": "Simple Node logging to upgrade and extend console.log()",
-  "main": "./dist/index.js",
-  "scripts": {
-    "init": "mkdir dist",
-    "clean": "rm -fr dist",
-    "minify": "uglifyjs dist/index.js -o dist/index.min.js --compress --comments --mangle --source-map 'filename=dist/index.js.map'",
-    "prebuild": "npm run clean && npm run init",
-    "build": "babel src -d dist --source-maps --presets es2015",
-    "prepublish": "npm run build && npm run minify",
-    "auditdist": "npm audit --omit dev"
-  },
+  "version": "1.1.2",
+  "description": "Simple NodeJS logging to upgrade and extend console.log()",
+  "main": "onelinelogger.js",
   "dependencies": {
-    "colors": "^1.1.2",
-    "uglify-js": "^3.13.10"
+    "colors": "^1.1.2"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/garyns/OneLineLogger"
   },
   "keywords": [
+    "log",
     "logger",
     "logging",
     "terminal",
@@ -30,16 +21,15 @@
   "engines": {
     "node": ">=0.12"
   },
-  "author": "Gary Smart",
+  "author": "Gary Smart (http://smart-itc.com.au)",
+  "license": "MIT",
   "files": [
-    "dist/*",
+    "onelinelogger.js",
     "README.md",
     "LICENSE",
     "CHANGELOG.md"
   ],
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1",
     "browser-info": "0.0.4"
   }
 }

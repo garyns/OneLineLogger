@@ -2,7 +2,7 @@
  * A simple, no fuss logging library for Node.
  * 
  * Web Browser Note - this library is untested and unexpected to work in a Web Browser.
- *                    it was designed spcifically for Node applications.
+ *                    it was designed specifically for Node applications.
  * 
  * Examples:
  * 
@@ -30,7 +30,7 @@
  *  // Disable global debug logging
  *  logger.setGlobalDebugging(false) 
  *
- *  // The following would also diable global debug logging
+ *  // The following would also disable global debug logging
  *  // dbLogger.setGlobalDebugging(false) 
  *  // apiLogger.setGlobalDebugging(false)
  * 
@@ -63,13 +63,18 @@ console._log = console.log;
 
 // Global settings that affect ALL instances of Logger.
 var prefixLen = 0;
-var debugging = true;
+var logLevel = 3 // Logger.INFO
 var file = null;
 
 function Logger() {
     this.prefix = "";
 }
 
+// Log Levels
+Logger.DEBUG = 3
+Logger.INFO = 2
+Logger.WARN = 1
+Logger.ERROR = 0
 
 /**
  * Create a custom Logger instance.
@@ -95,10 +100,43 @@ Logger.prototype.setGlobalPrefixLength = function(len) {
 }
 
 /**
+ * Set logging level.
+ * @param {Number} level logging level 3 (DEBUG), 2 (INFO), 1 (WARN), 0 (ERROR)
+ *   or use Logger.DEBUG, Logger.INFO, Logger.WARN or Logger.ERROR
+ */
+ Logger.prototype.setLevel = function(level) {
+
+    level = parseInt(level)
+
+    if (isNaN(level) || level < Logger.ERROR || level > Logger.DEBUG) {
+        throw new Error("Log level must be between 0 and 3. Constants available are Logger.DEBUG, Logger.INFO, Logger.WARN, Logger.ERROR")
+    }
+
+    logLevel = level
+    return this;
+}
+
+/**
+ * Get logging level
+ */
+ Logger.prototype.getLevel = function() {
+    return logLevel
+ }
+
+ /**
+ * Is debug logging level.
+ */
+ Logger.prototype.isDebug = function() {
+    return logLevel === Logger.DEBUG
+ }
+
+/**
  * Set weather .debug() calls are logged or not.
+ * @deprecated Use setLevel(Logger.DEBUG)
  */
 Logger.prototype.setGlobalDebugging = function(on) {
-    debugging = on;
+    Logger.warn('setGlobalDebugging() is deprecated. Please use setLevel(Logger.DEBUG)')
+    logLevel = Logger.DEBUG
     return this;
 }
 
@@ -133,7 +171,6 @@ Logger.prototype.log = function () {
     
     for (i in arguments) {
         if (typeof arguments[i] === "object") {
-            //arguments[i] = JSON.stringify(arguments[i]);
             arguments[i] = util.inspect(arguments[i]);
         }
     }  
@@ -154,7 +191,6 @@ Logger.prototype.highlight = function () {
     
     for (i in arguments) {
         if (typeof arguments[i] === "object") {
-            // arguments[i] = JSON.stringify(arguments[i]);
             arguments[i] = util.inspect(arguments[i]);
         }
     }    
@@ -165,7 +201,15 @@ Logger.prototype.highlight = function () {
     return this;
 };
 
+// Aliases for highlight
+Logger.prototype.silly = Logger.prototype.highlight;
+Logger.prototype.boo = Logger.prototype.highlight;
+
 Logger.prototype.info = function () {
+
+    if (logLevel < Logger.INFO) {
+        return
+    }
     
     Array.prototype.unshift.call(
         arguments,
@@ -175,7 +219,6 @@ Logger.prototype.info = function () {
     
     for (i in arguments) {
         if (typeof arguments[i] === "object") {
-            // arguments[i] = JSON.stringify(arguments[i]);
             arguments[i] = util.inspect(arguments[i]);
         }
     }    
@@ -187,6 +230,10 @@ Logger.prototype.info = function () {
 };
 
 Logger.prototype.error = function () {
+
+    if (logLevel < Logger.ERROR) {
+        return
+    }
     
     Array.prototype.unshift.call(
         arguments,
@@ -196,7 +243,6 @@ Logger.prototype.error = function () {
     
     for (i in arguments) {
         if (typeof arguments[i] === "object") {
-            //arguments[i] = JSON.stringify(arguments[i]);
             arguments[i] = util.inspect(arguments[i]);
         }
     }    
@@ -208,6 +254,10 @@ Logger.prototype.error = function () {
 };
 
 Logger.prototype.warn = function () {
+
+    if (logLevel < Logger.WARN) {
+        return
+    }
     
     Array.prototype.unshift.call(
         arguments,
@@ -217,7 +267,6 @@ Logger.prototype.warn = function () {
     
     for (i in arguments) {
         if (typeof arguments[i] === "object") {
-            // arguments[i] = JSON.stringify(arguments[i]);
             arguments[i] = util.inspect(arguments[i]);
         }
     }
@@ -230,13 +279,12 @@ Logger.prototype.warn = function () {
 
 Logger.prototype.debug = function () {
     
-    if (!debugging) {
-        return this;
+    if (logLevel < Logger.DEBUG) {
+        return
     }
     
     for (i in arguments) {
         if (typeof arguments[i] === "object") {
-            // arguments[i] = JSON.stringify(arguments[i]);
             arguments[i] = util.inspect(arguments[i]);
         }
     }
@@ -259,6 +307,7 @@ Logger.prototype.debug = function () {
 Logger.prototype.replaceConsole = function() {
     console.log = this.log.bind(this);
     console.highlight = this.highlight.bind(this);
+    console.boo = this.highlight.bind(this); // alias for highlight
     console.silly = this.highlight.bind(this); // alias for highlight
     console.info = this.info.bind(this);
     console.warn = this.warn.bind(this);
@@ -282,13 +331,6 @@ Logger.prototype.getPrefix = function(level) {
     }
     
     return "[" + level + "]" + " [" + p + "]";   
-}
-
-/**
- * Check if debug logging enabled
- */
- Logger.prototype.isDebug = function() {
-    return debugging
 }
 
 /**
@@ -324,12 +366,32 @@ Logger.warn = defaultLogger.warn.bind(defaultLogger);
 Logger.error = defaultLogger.error.bind(defaultLogger);
 Logger.highlight = defaultLogger.highlight.bind(defaultLogger);
 Logger.silly = defaultLogger.highlight.bind(defaultLogger); // Alias for highlight
+Logger.boo = defaultLogger.highlight.bind(defaultLogger); // Alias for highlight
 
 Logger.replaceConsole = defaultLogger.replaceConsole.bind(defaultLogger);
 Logger.setPrefix = defaultLogger.setPrefix.bind(defaultLogger);
+Logger.setLevel = defaultLogger.setLevel.bind(defaultLogger);
+Logger.getLevel = defaultLogger.getLevel.bind(defaultLogger);
 Logger.isDebug = defaultLogger.isDebug.bind(defaultLogger);
 Logger.setGlobalDebugging = defaultLogger.setGlobalDebugging.bind(defaultLogger);
 Logger.setGlobalFile = defaultLogger.setGlobalFile.bind(defaultLogger);
 Logger.setGlobalPrefixLength = defaultLogger.setGlobalPrefixLength.bind(defaultLogger);
 
 module.exports = Logger;
+
+
+
+
+//
+// Module Entry Point
+//
+if (typeof require !== 'undefined' && require.main === module) {
+
+    const logger = Logger.create("MyLogger")
+
+    logger.setLevel(Logger.ERROR)
+   
+    console.log(Logger.isDebug())
+    
+  
+} // cli

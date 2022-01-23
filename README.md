@@ -1,15 +1,20 @@
 # OneLineLogger
-Simple Node logging to upgrade and extend console.log()
+
+Simple NodeJS logging to upgrade and extend console.log()
 
 ## Installing
 
 ##### NPM
-```
+
+```shell
 npm install onelinelogger
 ```
+
 ##### GIT
+
 Clone from GIT and install dependencies.
-```
+
+```shell
 git clone https://github.com/garyns/OneLineLogger.git
 cd OneLineLogger
 npm install
@@ -18,6 +23,7 @@ npm install
 ## Examples
 
 ##### Basic Usage
+
 ```js
 // Variable logger is considered the 'default logger' instance. Custom loggers are discussed later.
 var logger = require("onelinelogger");
@@ -34,8 +40,10 @@ Here is the output:
 
 ![Console Output](https://raw.githubusercontent.com/garyns/OneLineLogger/master/mdassets/Console1-BasicLogger.jpg)
 
+For onelinelogger 1.1.2+ `logger.boo()` is an alias for `logger.highlight()`
 
 ##### Overloading console.log() and related functions
+
 ```js
 var logger = require("onelinelogger");
 
@@ -61,7 +69,9 @@ Here is the output (spacing added):
 ![Console Output](https://raw.githubusercontent.com/garyns/OneLineLogger/master/mdassets/Console3-ConsoleOverload.jpg)
 
 ##### Custom Logger Instance
+
 Create custom loggers to help associate log entries with different parts of your code.
+
 ```js
 // Default Logger instance
 var logger = require("onelinelogger");
@@ -88,6 +98,7 @@ Here is the output:
 ![Console Output](https://raw.githubusercontent.com/garyns/OneLineLogger/master/mdassets/Console2-CustomLogger.jpg)
 
 You can change the 'prefix' of a logger by calling `setPrefix()`.
+
 ```js
 var logger = require("onelinelogger");
 
@@ -102,7 +113,9 @@ myLogger.setPrefix("THEIR_LOGGER");
 ```
 
 ##### Global Settings
+
 These settings affect ALL logger instances - that is the default logger and any custom loggers you create.
+
 ```js
 var logger = require("onelinelogger");
 
@@ -117,11 +130,19 @@ logger.setGlobalFile(null);
 // Eg 0 -> [MAIN], where 10 -> [MAIN     ]
 logger.setGlobalPrefixLength(10);
 
-// Supress (false) or show (true) calls to .debug()
-// Debug logging is on by default.
+// Set Logging Level to one of logger.DEBUG, logger.INFO (default), logger.WARN or logger.ERROR
+logger.setLevel(logger.INFO)
+
+// Get Logging Level.
+const currentLogLevel = logger.getLevel()
+
+// Suppress (false) or show (true) calls to .debug()
+// NOTE deprecated in v1.1.2. Use setLevel(logger.DEBUG) instead.
 logger.setGlobalDebugging(true);
 
-// Check if global debugging is enabled.
+// Check if log level is logger.DEBUG
 const debugging = logger.isDebug();
-```
 
+// The previous isDebug() example is equivalent to
+const debugging = logger.getLevel() === logger.DEBUG
+```
