@@ -63,7 +63,7 @@ console._log = console.log;
 
 // Global settings that affect ALL instances of Logger.
 var prefixLen = 0;
-var logLevel = 3 // Logger.INFO
+var logLevel = 2 // Logger.INFO
 var file = null;
 
 function Logger() {
@@ -71,13 +71,21 @@ function Logger() {
 }
 
 // Log Levels
-Logger.DEBUG = 3
+Logger.DEBUG = 4
+Logger.NOTICE = 3
 Logger.INFO = 2
 Logger.WARN = 1
 Logger.ERROR = 0
 
+Logger.prototype.DEBUG = Logger.DEBUG
+Logger.prototype.NOTICE = Logger.NOTICE
+Logger.prototype.INFO = Logger.INFO
+Logger.prototype.WARN = Logger.WARN
+Logger.prototype.ERROR = Logger.ERROR
+
+
 // Log Levels as Strings
-const logLevelStrings = ['ERROR', 'WARN', 'INFO', 'DEBUG']
+const logLevelStrings = ['ERROR', 'WARN', 'NOTICE', 'INFO', 'DEBUG']
 
 /**
  * Create a custom Logger instance.
@@ -104,8 +112,8 @@ Logger.prototype.setGlobalPrefixLength = function(len) {
 
 /**
  * Set logging level.
- * @param {(Number|String)} level logging level 3 (DEBUG), 2 (INFO), 1 (WARN), 0 (ERROR)
- *   or use Logger.DEBUG, Logger.INFO, Logger.WARN or Logger.ERROR
+ * @param {(Number|String)} level logging level 4 (DEBUG), 3 (INFO), 2 (NOTICE) 1 (WARN), 0 (ERROR)
+ *   or use Logger.DEBUG, Logger.INFO, Logger.NOTICE, Logger.WARN or Logger.ERROR
  */
  Logger.prototype.setLevel = function(level) {
 
@@ -116,7 +124,7 @@ Logger.prototype.setGlobalPrefixLength = function(len) {
     }
 
     if (isNaN(level) || level < Logger.ERROR || level > Logger.DEBUG) {
-        throw new Error("Log level must be between 0 and 3, or a one of the strings ERROR, WARN, INFO or DEBUG. Constants available are Logger.DEBUG, Logger.INFO, Logger.WARN, Logger.ERROR")
+        throw new Error("Log level must be between 0 and 4, or a one of the strings ERROR, WARN, NOTICE, INFO or DEBUG. Constants available are Logger.DEBUG, Logger.INFO, Logger.NOTICE, Logger.WARN, Logger.ERROR")
     }    
 
     logLevel = level
@@ -132,7 +140,7 @@ Logger.prototype.setGlobalPrefixLength = function(len) {
 
 /**
  * Get logging level name
- * @returns {String} ERROR, WARN, INFO or DEBUG
+ * @returns {String} ERROR, WARN, NOTICE, INFO or DEBUG
  */
  Logger.prototype.getLevelName = function() {
     return logLevelStrings[logLevel]
@@ -244,6 +252,30 @@ Logger.prototype.info = function () {
     return this;
 };
 
+Logger.prototype.notice = function () {
+
+    if (logLevel < Logger.NOTICE) {
+        return
+    }
+    
+    Array.prototype.unshift.call(
+        arguments,
+        new Date().toLocaleString(),
+        this.getPrefix("NOTICE")
+    );
+    
+    for (i in arguments) {
+        if (typeof arguments[i] === "object") {
+            arguments[i] = util.inspect(arguments[i]);
+        }
+    }    
+
+    argumentsStr =  Array.prototype.join.call(arguments, " ");
+    writeLogFile(file, argumentsStr);
+    console._log(argumentsStr);
+    return this;
+};
+
 Logger.prototype.error = function () {
 
     if (logLevel < Logger.ERROR) {
@@ -333,7 +365,7 @@ Logger.prototype.replaceConsole = function() {
 
 Logger.prototype.getPrefix = function(level) {
     
-    level = padLeft(5, level, " "); // 5 = ERROR.length
+    level = padLeft(6, level, " "); // 6 = NOTICE.length
  
     if (this.prefix === "") {
         return "[" + level + "]";
@@ -376,6 +408,7 @@ var defaultLogger = new Logger();
 
 Logger.log = defaultLogger.log.bind(defaultLogger);
 Logger.debug = defaultLogger.debug.bind(defaultLogger);
+Logger.notice = defaultLogger.notice.bind(defaultLogger);
 Logger.info = defaultLogger.info.bind(defaultLogger);
 Logger.warn = defaultLogger.warn.bind(defaultLogger);
 Logger.error = defaultLogger.error.bind(defaultLogger);

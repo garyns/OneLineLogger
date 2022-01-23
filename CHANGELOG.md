@@ -1,5 +1,9 @@
 # OneLineLogger Change Log
 
+## 1.1.4
+
+* Added `NOTICE` level. For example `setLevel(Logger.NOTICE)`, `Logger.notice('A note')`. Level precedence is ERROR -> WARN -> NOTICE -> INFO -> DEBUG
+
 ## 1.1.3
 
 * `setLevel()` can now take a one of the strings `DEBUG`, `INFO`, `WARN` or `ERROR` in addition to a Number between 0 and 3 (0 to 3 relating to the constants `logger.DEBUG`, etc )

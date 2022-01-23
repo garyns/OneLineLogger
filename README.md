@@ -141,14 +141,14 @@ logger.setGlobalFile(null);
 // Eg 0 -> [MAIN], where 10 -> [MAIN     ]
 logger.setGlobalPrefixLength(10);
 
-// Set Logging Level to one of constants logger.DEBUG, logger.INFO (default), logger.WARN or logger.ERROR, or alternatively the strings DEBUG, INFO, WARN or ERROR
+// Set Logging Level to one of constants logger.DEBUG logger.INFO (default), logger.NOTICE, logger.WARN or logger.ERROR, or alternatively the strings DEBUG, INFO, NOTICE, WARN or ERROR
 logger.setLevel(logger.INFO)
 logger.setLevel("WARN")
 
-// Get Logging Level (as Number 0 - 3).
+// Get Logging Level (as Number 0 - 4).
 const currentLogLevel = logger.getLevel()
 
-// Get Logging Level Name (DEBUG, INFO, WARN or ERROR)
+// Get Logging Level Name (DEBUG, INFO, NOTICE, WARN or ERROR)
 const currentLogLevelName = logger.getLevelName()
 
 
