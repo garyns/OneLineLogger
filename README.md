@@ -1,6 +1,17 @@
 # OneLineLogger
 
-Simple NodeJS logging to upgrade and extend console.log()
+Simple no-fuss colorised logging for NodeJS
+
+## Feature Overview
+
+* Light-weight, quick to setup and easy to use.
+* Multiple logger instances
+* Customizable logger prefixes (to help distinguish logging from different modules)
+* One line statement to optionally upgrade (colorize and timestamp) all existing uses of `console.log()`, `console.info()`, `console.warn()` and `console.error()` throughout a code base.
+* Log to file.
+* Configurable logging levels - DEBUG, INFO, WARN & ERROR.
+
+> Please note OneLineLogger is for NodeJS. It will not work in Web Browsers.
 
 ## Installing
 
